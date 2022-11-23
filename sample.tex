@@ -1,0 +1,31 @@
+\documentclass[12pt]{report}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{amzmath}
+
+\usepackage{amsthm} % Theorems
+\usepackage{lipsum} % Filler text
+
+\begin{document}
+    \chapter{Example}
+
+    \lipsum[1]
+    \begin{dfnbox}{asdf}
+        \dfntxt{asdf} is the word you get when you press the first four home-row keys from left to right.
+    \end{dfnbox}
+
+    \begin{thmbox}{Template}
+        This \LaTeX\ template is cool.
+        \tcblower
+        \begin{proof}
+            \lipsum[1]
+        \end{proof}
+    \end{thmbox}
+
+    \begin{exbox}{Template}
+        \lipsum[1]
+    \end{exbox}
+
+    \chapter{Really really long title that has to use two separate lines}
+
+\end{document}
