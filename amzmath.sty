@@ -1,0 +1,248 @@
+% amzmath - Alex M Zhang math
+% Credit to David Zhang for the original template
+
+% ------------------------------------------------------------
+% FONTS
+\usepackage{mathtools}
+
+\usepackage{fontspec} % needed to set main font
+\setmainfont{STIX Two Text}
+
+\usepackage{unicode-math} % needed to set math font -- also replaces amssymb
+\setmathfont{STIX Two Math}
+\setmathfont{STIX Two Math}[range={scr,bfscr},StylisticSet=01]
+
+% ------------------------------------------------------------
+% COLORS
+
+\usepackage[dvipsnames]{xcolor}
+
+% ------------------------------------------------------------
+% CHAPTER STYLING
+
+\usepackage[explicit]{titlesec}
+
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}
+{}
+{20pt}
+{%
+    \begin{tcolorbox}[
+        enhanced,
+		left=23mm,
+		right=25mm,
+		top=2mm,
+		spread sidewards,
+		sharp corners,
+		colback=RoyalBlue,
+		colframe=RoyalBlue,
+		boxrule=1mm,
+        title=\thechapter,
+        attach boxed title to top right={xshift=-15mm, yshift=-4mm},
+        boxed title style={
+			size=small,
+			colback=RoyalBlue,
+			colframe=white
+		}    
+    ]
+        \strut \textcolor{white}{#1}
+	\end{tcolorbox}
+}
+
+\titleformat{name=\chapter,numberless}[display]{\normalfont\huge\bfseries}
+{}
+{20pt}
+{%
+    \begin{tcolorbox}[
+        enhanced,
+		left=23mm,
+		right=25mm,
+		top=2mm,
+		spread sidewards,
+		sharp corners,
+		colback=RoyalBlue,
+		colframe=RoyalBlue,
+		boxrule=1mm,
+		%drop fuzzy shadow,
+    ]
+        \strut \textcolor{white}{#1}
+	\end{tcolorbox}
+}
+
+\titlespacing*{\chapter}{0pt}{-40mm}{-15mm}
+
+% ------------------------------------------------------------
+% HEADER STYLING
+
+\usepackage{fancyhdr, lastpage}
+\pagestyle{fancy}
+\lhead{\slshape\nouppercase{\leftmark}}
+\rhead{\slshape\nouppercase{\rightmark}}
+\cfoot{\thepage\ of \pageref{LastPage}}
+
+\fancypagestyle{plain}{
+	\renewcommand{\headrulewidth}{0pt}
+	\fancyhead{}
+	\cfoot[C]{\thepage\ of \pageref{LastPage}}
+}
+
+
+% ------------------------------------------------------------
+% PAGE LAYOUT
+
+\usepackage[hidelinks]{hyperref}
+\usepackage{parskip}
+
+\usepackage{setspace}
+\onehalfspacing
+
+%\setlength{\abovedisplayskip}{2pt}
+%\setlength{\belowdisplayskip}{2pt}
+
+% ------------------------------------------------------------
+% BOXES
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbuselibrary{theorems}
+\tcbuselibrary{breakable}
+
+\newcommand{\titlesep}{\raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$\ \ \ }}}
+
+\newtcolorbox{tcgenbox}[1]{
+	enhanced,
+	arc=0mm,
+	colback=PineGreen!5!white,
+	colframe=PineGreen!75!black,
+	drop fuzzy shadow,
+	%grow to left by=5.5mm,
+	%grow to right by=5.5mm,
+	title=\strut {\textbf{{#1}}}
+}
+
+\newtcolorbox{tcdfnbox}[1]{
+	enhanced,
+	arc=0mm,
+	colback=RoyalBlue!5!white,
+	colframe=RoyalBlue!75!black,
+	drop fuzzy shadow,
+	title=\strut {\textbf{Definition} \titlesep {#1}},
+}
+
+\newtcolorbox{tcthmbox}[1]{
+	enhanced,
+	arc=0mm,
+	colback=RoyalPurple!5!white,
+	colframe=RoyalPurple!75!black,
+	drop fuzzy shadow,
+	title=\strut {\textbf{Theorem} \titlesep {#1}},
+}
+
+\newtcolorbox{tcbigthmbox}[1]{
+	enhanced,
+	breakable,
+	arc=0mm,
+	colback=RoyalPurple!5!white,
+	colframe=RoyalPurple!75!black,
+	drop fuzzy shadow,
+	title=\strut {\textbf{Theorem} \titlesep {#1}},
+}
+
+\newtcolorbox{tctecbox}[1]{
+	enhanced,
+	arc=0mm,
+	colback=OrangeRed!5!white,
+	colframe=OrangeRed!75!black,
+	drop fuzzy shadow,
+	title=\strut {\textbf{Technique} \titlesep {#1}},
+}
+
+\newtcolorbox[auto counter,number within=section]{tcexbox}[1]{
+	enhanced,
+	arc=0mm,
+	colback=Dandelion!5!white,
+	colframe=Dandelion!75!black,
+	drop fuzzy shadow,
+	title=\strut {\textbf{Example~\thetcbcounter} \titlesep {#1}},
+}
+
+\newenvironment{genbox}[1]{
+	\begin{tcgenbox}{#1}
+}{
+	\end{tcgenbox}
+}
+
+\newenvironment{dfnbox}[1]{
+	\begin{tcdfnbox}{#1}
+}{
+	\end{tcdfnbox}
+}
+
+\newenvironment{thmbox}[1]{
+	\begin{tcthmbox}{#1}
+}{
+	\end{tcthmbox}
+}
+
+\newenvironment{bigthmbox}[1]{
+	\begin{tcbigthmbox}{#1}
+}{
+	\end{tcbigthmbox}
+}
+
+\newenvironment{tecbox}[1]{
+	\begin{tctecbox}{#1}
+}{
+	\end{tctecbox}
+}
+
+\newenvironment{exbox}[1]{
+	\begin{tcexbox}{#1}
+}{
+	\end{tcexbox}
+}
+
+% ------------------------------------------------------------
+% FIGURES
+
+\usepackage{environ}
+
+\NewEnviron{graph}{
+	\begin{tikzpicture}[shorten >=1pt,->]
+		\tikzstyle{vertex}=[circle,fill=Dandelion!50,minimum size=12pt,inner sep=2pt]
+		\BODY
+	\end{tikzpicture}
+}
+
+% ------------------------------------------------------------ 
+% TEXT MACROS
+
+\newcommand{\dfntxt}[1]{{\textbf{#1}}}
+
+% ------------------------------------------------------------
+% MATH MACROS
+
+\newcommand{\rel}[1]{\mathrel{\mathcal{#1}}}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\id}{\text{id}}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\laplace}{\mathscr{L}}
+
+\newcommand{\symdiff}{\bigtriangleup}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclareMathOperator{\const}{const}
+\DeclareMathOperator{\tr}{tr}
+
+% From https://tex.stackexchange.com/a/22255
+\newcommand\restrict[2]{{
+	\left.\kern-\nulldelimiterspace
+	#1
+	\vphantom{\big|}
+	\right|_{#2}
+}}
