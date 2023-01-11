@@ -5,16 +5,18 @@
 
 \usepackage{amsthm} % Theorems
 \usepackage{lipsum} % Filler text
+\usepackage{fancyvrb}
 
 \begin{document}
-    \chapter{Example}
+    \chapter{Chapter title}
 
     \lipsum[1]
-    \begin{dfnbox}{asdf}
+
+    \begin{dfnbox}{asdf}{asdf}
         \dfntxt{asdf} is the word you get when you press the first four home-row keys from left to right.
     \end{dfnbox}
 
-    \begin{thmbox}{Template}
+    \begin{thmbox}{Cool Theorem}{cool}
         This \LaTeX\ template is cool.
         \tcblower
         \begin{proof}
@@ -22,10 +24,31 @@
         \end{proof}
     \end{thmbox}
 
-    \begin{exbox}{Template}
+    As seen in \nameref{thm:cool} (Theorem \ref{thm:cool}), this template is pretty cool.
+
+    \begin{exbox}{Template}{}
         \lipsum[1]
     \end{exbox}
 
+    \begin{tecbox}{Using This Template}{}
+        To use this template, simply download the \href{https://raw.githubusercontent.com/alexmingzhang/latex-notes-template/main/amzmath.sty}{amzmath.sty} file, and include it using the command \verb|\usepackage{amzmath}|.
+    \end{tecbox}
+
+    \begin{codebox}{Cool Code}{cool}
+        \begin{amzcode}{c++}
+            #include <iostream>
+
+            int main() {
+                std::cout << "Wassup" << std::endl;
+                return 0;
+            }
+        \end{amzcode}
+    \end{codebox}
+
+    The \nameref{code:cool} is pretty cool!
+
     \chapter{Really really long title that has to use two separate lines}
+
+    \makeamzindex
 
 \end{document}

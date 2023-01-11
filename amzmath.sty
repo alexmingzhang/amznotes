@@ -1,21 +1,55 @@
 % amzmath - Alex M Zhang math
 % Credit to David Zhang for the original template
 
+% TODO:
+% 	- make math in box titles bold
+%	- fix header for unnumbered chapters
+%	- fix spacing of itemize and enumerate
+
+\usepackage{environ}
+
 % ------------------------------------------------------------
 % FONTS
 \usepackage{mathtools}
 
 \usepackage{fontspec} % needed to set main font
-\setmainfont{STIX Two Text}
+\setmainfont{STIXTwoText}[
+  Extension = .otf,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-BoldItalic,
+]
 
 \usepackage{unicode-math} % needed to set math font -- also replaces amssymb
-\setmathfont{STIX Two Math}
-\setmathfont{STIX Two Math}[range={scr,bfscr},StylisticSet=01]
+\setmathfont{STIXTwoMath-Regular.otf}
+\setmathfont{STIXTwoMath-Regular.otf}[range={scr,bfscr},StylisticSet=01]
+\setmonofont{Inconsolata}
+
 
 % ------------------------------------------------------------
 % COLORS
-
 \usepackage[dvipsnames]{xcolor}
+
+\colorlet{amzchaptercolor}{RoyalBlue}
+\colorlet{amzdfnboxcolor}{RoyalBlue}
+\colorlet{amzthmboxcolor}{RoyalPurple}
+\colorlet{amzexboxcolor}{Dandelion}
+\colorlet{amzgenboxcolor}{PineGreen}
+\colorlet{amztecboxcolor}{WildStrawberry}
+\colorlet{amzcodeboxcolor}{darkgray}
+\colorlet{amznoteboxcolor}{WildStrawberry}
+
+% ------------------------------------------------------------
+% LINKS
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=false,
+	linkbordercolor=black,
+	urlbordercolor=blue,
+	pdfborderstyle={/S/U/W 1}	% Underline links; only appears in pdf viewer, not printed
+}
 
 % ------------------------------------------------------------
 % CHAPTER STYLING
@@ -33,16 +67,16 @@
 		top=2mm,
 		spread sidewards,
 		sharp corners,
-		colback=RoyalBlue,
-		colframe=RoyalBlue,
+		colback=amzchaptercolor,
+		colframe=amzchaptercolor,
 		boxrule=1mm,
         title=\thechapter,
         attach boxed title to top right={xshift=-15mm, yshift=-4mm},
         boxed title style={
 			size=small,
-			colback=RoyalBlue,
+			colback=amzchaptercolor,
 			colframe=white
-		}    
+		}
     ]
         \strut \textcolor{white}{#1}
 	\end{tcolorbox}
@@ -59,8 +93,8 @@
 		top=2mm,
 		spread sidewards,
 		sharp corners,
-		colback=RoyalBlue,
-		colframe=RoyalBlue,
+		colback=amzchaptercolor,
+		colframe=amzchaptercolor,
 		boxrule=1mm,
 		%drop fuzzy shadow,
     ]
@@ -85,137 +119,148 @@
 	\cfoot[C]{\thepage\ of \pageref{LastPage}}
 }
 
-
 % ------------------------------------------------------------
 % PAGE LAYOUT
 
-\usepackage[hidelinks]{hyperref}
-\usepackage{parskip}
-
-\usepackage{setspace}
+\usepackage{parskip}	% New line after each paragraph; don't indent
+\usepackage{setspace}	% 1.5 line spacing
 \onehalfspacing
 
 %\setlength{\abovedisplayskip}{2pt}
 %\setlength{\belowdisplayskip}{2pt}
 
 % ------------------------------------------------------------
-% BOXES
-\usepackage{tcolorbox}
-\tcbuselibrary{skins}
-\tcbuselibrary{theorems}
-\tcbuselibrary{breakable}
+% COLOR BOXES
+\usepackage[most,minted]{tcolorbox}
 
-\newcommand{\titlesep}{\raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$\ \ \ }}}
+\newcommand{\amztitlesep}{\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}}
 
-\newtcolorbox{tcgenbox}[1]{
-	enhanced,
-	arc=0mm,
-	colback=PineGreen!5!white,
-	colframe=PineGreen!75!black,
-	drop fuzzy shadow,
-	%grow to left by=5.5mm,
-	%grow to right by=5.5mm,
-	title=\strut {\textbf{{#1}}}
+\tcbset{
+	coolshadow/.style={
+		drop fuzzy shadow
+	},
+    amzdefaultstyle/.style={
+        enhanced,					%
+        fonttitle=\strut\bfseries,	% strut for uniform title height
+        sharp corners,
+		boxrule=0pt,
+		frame hidden,
+        segmentation style={solid,opacity=0.2,line width=1pt},
+        separator sign={\amztitlesep},
+        parbox=false,
+		%breakable,
+        coolshadow
+    },
+	dfnboxstyle/.style={
+        frame style={fill=amzdfnboxcolor!75!black},
+        interior style={fill=amzdfnboxcolor!5!white}
+    },
+    thmboxstyle/.style={
+        frame style={fill=amzthmboxcolor!75!black},
+        interior style={fill=amzthmboxcolor!5!white}
+    },
+	exboxstyle/.style={
+		frame style={fill=amzexboxcolor!75!black},
+		interior style={fill=amzexboxcolor!5!white}
+	},
+	genboxstyle/.style={
+		frame style={fill=amzgenboxcolor!75!black},
+		interior style={fill=amzgenboxcolor!5!white}
+	},
+	tecboxstyle/.style={
+		frame style={fill=amztecboxcolor!75!black},
+		interior style={fill=amztecboxcolor!5!white}
+	},
+	codeboxstyle/.style={
+		frame style={fill=amzcodeboxcolor!75!black},
+		interior style={fill=amzcodeboxcolor!5!white},
+		overlay={\begin{tcbclipinterior}\fill[black!15!white] (frame.south west) rectangle ([xshift=5mm]frame.north west);\end{tcbclipinterior}}
+	},
+	noteboxstyle/.style={
+		enhanced,
+		boxrule=0pt,frame hidden,
+		borderline west={4pt}{0pt}{WildStrawberry!75!black},
+		colback=amznoteboxcolor!7!white,
+		sharp corners,
+		coolshadow
+	}
 }
 
-\newtcolorbox{tcdfnbox}[1]{
-	enhanced,
-	arc=0mm,
-	colback=RoyalBlue!5!white,
-	colframe=RoyalBlue!75!black,
-	drop fuzzy shadow,
-	title=\strut {\textbf{Definition} \titlesep {#1}},
-}
+\newtcbtheorem[auto counter,number within=section,list inside={dfn}]{dfnbox}{Definition}{amzdefaultstyle,dfnboxstyle}{dfn}
 
-\newtcolorbox{tcthmbox}[1]{
-	enhanced,
-	arc=0mm,
-	colback=RoyalPurple!5!white,
-	colframe=RoyalPurple!75!black,
-	drop fuzzy shadow,
-	title=\strut {\textbf{Theorem} \titlesep {#1}},
-}
+\newtcbtheorem[auto counter,number within=section,list inside={thm}]{thmbox}{Theorem}{amzdefaultstyle,thmboxstyle}{thm}
 
-\newtcolorbox{tcbigthmbox}[1]{
-	enhanced,
-	breakable,
-	arc=0mm,
-	colback=RoyalPurple!5!white,
-	colframe=RoyalPurple!75!black,
-	drop fuzzy shadow,
-	title=\strut {\textbf{Theorem} \titlesep {#1}},
-}
+\newtcbtheorem[auto counter,number within=section,list inside={ex}]{exbox}{Example}{amzdefaultstyle,exboxstyle}{ex}
 
-\newtcolorbox{tctecbox}[1]{
-	enhanced,
-	arc=0mm,
-	colback=OrangeRed!5!white,
-	colframe=OrangeRed!75!black,
-	drop fuzzy shadow,
-	title=\strut {\textbf{Technique} \titlesep {#1}},
-}
+\newtcbtheorem[auto counter,number within=section,list inside={tec}]{tecbox}{Technique}{amzdefaultstyle,tecboxstyle}{tec}
 
-\newtcolorbox[auto counter,number within=section]{tcexbox}[1]{
-	enhanced,
-	arc=0mm,
-	colback=Dandelion!5!white,
-	colframe=Dandelion!75!black,
-	drop fuzzy shadow,
-	title=\strut {\textbf{Example~\thetcbcounter} \titlesep {#1}},
-}
+% Codebox uses minted package
+\usepackage{minted}
+\renewcommand{\theFancyVerbLine}{\ttfamily\small{\arabic{FancyVerbLine}}}
 
-\newenvironment{genbox}[1]{
-	\begin{tcgenbox}{#1}
-}{
-	\end{tcgenbox}
-}
+\newtcbtheorem[auto counter,number within=section,list inside={code}]{codebox}{Code Snippet}{amzdefaultstyle,codeboxstyle}{code}
 
-\newenvironment{dfnbox}[1]{
-	\begin{tcdfnbox}{#1}
-}{
-	\end{tcdfnbox}
-}
+\newenvironment{amzcode}[2][]{
+	\VerbatimEnvironment
+	\begin{minted}[
+	linenos,
+	breaklines,
+	autogobble,
+	xleftmargin=2.6mm,
+	]{#2}}
+{\end{minted}}
 
-\newenvironment{thmbox}[1]{
-	\begin{tcthmbox}{#1}
-}{
-	\end{tcthmbox}
-}
+\newtcolorbox{genbox}[1]{amzdefaultstyle, genboxstyle, title={#1}}
 
-\newenvironment{bigthmbox}[1]{
-	\begin{tcbigthmbox}{#1}
-}{
-	\end{tcbigthmbox}
-}
+\newtcolorbox{notebox}{noteboxstyle}
 
-\newenvironment{tecbox}[1]{
-	\begin{tctecbox}{#1}
-}{
-	\end{tctecbox}
-}
-
-\newenvironment{exbox}[1]{
-	\begin{tcexbox}{#1}
-}{
-	\end{tcexbox}
-}
+% \newtcblisting[auto counter,number within=section,list inside={code}]{codebox}[2]{
+%     amzdefaultstyle,
+%     title={\hspace*{-2mm}Code Snippet\amztitlesep\ {#2}},
+%     left=6mm,
+%     listing engine=minted,
+%     minted style=colorful,
+%     minted language={#1},
+%     minted options={breaklines,autogobble,linenos,numbersep=4mm},
+%     listing only,
+%     overlay={\begin{tcbclipinterior}\fill[black!15!white] (frame.south west)
+%     rectangle ([xshift=5mm]frame.north west);\end{tcbclipinterior}}
+% }
 
 % ------------------------------------------------------------
 % FIGURES
 
-\usepackage{environ}
-
-\NewEnviron{graph}{
+\NewEnviron{amzgraph}{
 	\begin{tikzpicture}[shorten >=1pt,->]
 		\tikzstyle{vertex}=[circle,fill=Dandelion!50,minimum size=12pt,inner sep=2pt]
 		\BODY
 	\end{tikzpicture}
 }
 
-% ------------------------------------------------------------ 
+% ------------------------------------------------------------
 % TEXT MACROS
 
 \newcommand{\dfntxt}[1]{{\textbf{#1}}}
+
+\usepackage{refcount}
+\newcommand{\makeamzindex}{
+	\addcontentsline{toc}{chapter}{Index}
+	\chapter*{Index}
+
+	\renewcommand{\headrulewidth}{0pt}  % Remove header for index
+	\fancyhead{}
+
+	\tcblistof[\section*]{dfn}{Definitions}
+	\newpage
+	\tcblistof[\section*]{ex}{Examples}
+	\newpage
+	\tcblistof[\section*]{thm}{Theorems}
+	\newpage
+	\tcblistof[\section*]{tec}{Techniques}
+	\newpage
+	\tcblistof[\section*]{code}{Code Snippets}
+
+}
 
 % ------------------------------------------------------------
 % MATH MACROS
@@ -231,14 +276,16 @@
 
 \newcommand{\id}{\text{id}}
 \newcommand{\bigO}{\mathcal{O}}
-\newcommand{\laplace}{\mathscr{L}}
+\DeclareMathOperator{\laplace}{\mathscr{L}}
+
 
 \newcommand{\symdiff}{\bigtriangleup}
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
-\DeclareMathOperator{\const}{const}
-\DeclareMathOperator{\tr}{tr}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
+% Function Restriction
 % From https://tex.stackexchange.com/a/22255
 \newcommand\restrict[2]{{
 	\left.\kern-\nulldelimiterspace
