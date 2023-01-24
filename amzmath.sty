@@ -1,18 +1,33 @@
 % amzmath - Alex M Zhang math
 % Credit to David Zhang for the original template
 
+% To fix header for unnumbered chapters, do:
+% \chapter*{Chapter Title}
+% \markboth{Chapter Title}{Chapter Title}
+
 % TODO:
 % 	- make math in box titles bold
-%	- fix header for unnumbered chapters
 %	- fix spacing of itemize and enumerate
+%	- hide index sections with no contents
 
-\usepackage{environ}
+\ProvidesPackage{amzmath}[2023/01/24 amzmath]
+
+\RequirePackage{mathtools}				% for math macros; also loads amsmath
+\RequirePackage{fontspec} 				% set main font
+\RequirePackage{unicode-math} 			% set math font; replaces amssymb
+\RequirePackage[dvipsnames]{xcolor}		% pretty colors
+\RequirePackage{hyperref}				% links in pdf viewers; will be underlined in pdf viewer only
+\RequirePackage{fancyhdr}				% fancy headers
+\RequirePackage{lastpage}				% "X of Y" footer
+\RequirePackage{parskip}				% new line after each paragraph w/o indent
+\RequirePackage{setspace}				% 1.5 line spacing
+\RequirePackage[explicit]{titlesec}		% chapter styling
+\RequirePackage[most,minted]{tcolorbox}	% pretty boxes
+\RequirePackage{minted}					% syntax coloring for code
 
 % ------------------------------------------------------------
 % FONTS
-\usepackage{mathtools}
 
-\usepackage{fontspec} % needed to set main font
 \setmainfont{STIXTwoText}[
   Extension = .otf,
   UprightFont = *-Regular,
@@ -20,16 +35,17 @@
   ItalicFont = *-Italic,
   BoldItalicFont = *-BoldItalic,
 ]
-
-\usepackage{unicode-math} % needed to set math font -- also replaces amssymb
 \setmathfont{STIXTwoMath-Regular.otf}
 \setmathfont{STIXTwoMath-Regular.otf}[range={scr,bfscr},StylisticSet=01]
 \setmonofont{Inconsolata}
 
+% ------------------------------------------------------------
+% PAGE LAYOUT
+
+\onehalfspacing
 
 % ------------------------------------------------------------
 % COLORS
-\usepackage[dvipsnames]{xcolor}
 
 \colorlet{amzchaptercolor}{RoyalBlue}
 \colorlet{amzdfnboxcolor}{RoyalBlue}
@@ -42,7 +58,6 @@
 
 % ------------------------------------------------------------
 % LINKS
-\usepackage{hyperref}
 
 \hypersetup{
     colorlinks=false,
@@ -54,12 +69,10 @@
 % ------------------------------------------------------------
 % CHAPTER STYLING
 
-\usepackage[explicit]{titlesec}
-
 \titleformat{\chapter}[display]{\normalfont\huge\bfseries}
 {}
 {20pt}
-{%
+{
     \begin{tcolorbox}[
         enhanced,
 		left=23mm,
@@ -85,7 +98,7 @@
 \titleformat{name=\chapter,numberless}[display]{\normalfont\huge\bfseries}
 {}
 {20pt}
-{%
+{
     \begin{tcolorbox}[
         enhanced,
 		left=23mm,
@@ -107,10 +120,9 @@
 % ------------------------------------------------------------
 % HEADER STYLING
 
-\usepackage{fancyhdr, lastpage}
 \pagestyle{fancy}
-\lhead{\slshape\nouppercase{\leftmark}}
-\rhead{\slshape\nouppercase{\rightmark}}
+\lhead{\footnotesize\nouppercase{\leftmark}}
+\rhead{\footnotesize\nouppercase{\rightmark}}
 \cfoot{\thepage\ of \pageref{LastPage}}
 
 \fancypagestyle{plain}{
@@ -120,24 +132,13 @@
 }
 
 % ------------------------------------------------------------
-% PAGE LAYOUT
-
-\usepackage{parskip}	% New line after each paragraph; don't indent
-\usepackage{setspace}	% 1.5 line spacing
-\onehalfspacing
-
-%\setlength{\abovedisplayskip}{2pt}
-%\setlength{\belowdisplayskip}{2pt}
-
-% ------------------------------------------------------------
 % COLOR BOXES
-\usepackage[most,minted]{tcolorbox}
 
 \newcommand{\amztitlesep}{\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}}
 
 \tcbset{
 	coolshadow/.style={
-		drop fuzzy shadow
+		drop fuzzy shadow,
 	},
     amzdefaultstyle/.style={
         enhanced,					%
@@ -152,26 +153,33 @@
         coolshadow
     },
 	dfnboxstyle/.style={
+		amzdefaultstyle,
         frame style={fill=amzdfnboxcolor!75!black},
         interior style={fill=amzdfnboxcolor!5!white}
     },
     thmboxstyle/.style={
+		amzdefaultstyle,
         frame style={fill=amzthmboxcolor!75!black},
         interior style={fill=amzthmboxcolor!5!white}
     },
 	exboxstyle/.style={
+		amzdefaultstyle,
 		frame style={fill=amzexboxcolor!75!black},
 		interior style={fill=amzexboxcolor!5!white}
 	},
 	genboxstyle/.style={
+		amzdefaultstyle,
 		frame style={fill=amzgenboxcolor!75!black},
 		interior style={fill=amzgenboxcolor!5!white}
 	},
 	tecboxstyle/.style={
+		amzdefaultstyle,
 		frame style={fill=amztecboxcolor!75!black},
 		interior style={fill=amztecboxcolor!5!white}
 	},
 	codeboxstyle/.style={
+		amzdefaultstyle,
+		breakable,
 		frame style={fill=amzcodeboxcolor!75!black},
 		interior style={fill=amzcodeboxcolor!5!white},
 		overlay={\begin{tcbclipinterior}\fill[black!15!white] (frame.south west) rectangle ([xshift=5mm]frame.north west);\end{tcbclipinterior}}
@@ -186,29 +194,35 @@
 	}
 }
 
-\newtcbtheorem[auto counter,number within=section,list inside={dfn}]{dfnbox}{Definition}{amzdefaultstyle,dfnboxstyle}{dfn}
+\newtcbtheorem[auto counter,number within=section,list inside={dfn}]{dfnbox}{Definition}{dfnboxstyle}{dfn}
 
-\newtcbtheorem[auto counter,number within=section,list inside={thm}]{thmbox}{Theorem}{amzdefaultstyle,thmboxstyle}{thm}
+\newtcbtheorem[auto counter,number within=section,list inside={thm}]{thmbox}{Theorem}{thmboxstyle}{thm}
 
-\newtcbtheorem[auto counter,number within=section,list inside={ex}]{exbox}{Example}{amzdefaultstyle,exboxstyle}{ex}
+\newtcbtheorem[auto counter,number within=section,list inside={ex}]{exbox}{Example}{exboxstyle}{ex}
 
-\newtcbtheorem[auto counter,number within=section,list inside={tec}]{tecbox}{Technique}{amzdefaultstyle,tecboxstyle}{tec}
+\newtcbtheorem[auto counter,number within=section,list inside={tec}]{tecbox}{Technique}{tecboxstyle}{tec}
 
-% Codebox uses minted package
-\usepackage{minted}
-\renewcommand{\theFancyVerbLine}{\ttfamily\small{\arabic{FancyVerbLine}}}
+% Set size and font of minted line numbers
+\renewcommand{\theFancyVerbLine}{\ttfamily\scriptsize{\arabic{FancyVerbLine}}}
 
-\newtcbtheorem[auto counter,number within=section,list inside={code}]{codebox}{Code Snippet}{amzdefaultstyle,codeboxstyle}{code}
+\newtcbtheorem[auto counter,number within=section,list inside={code}]{codebox}{Code Snippet}{codeboxstyle}{code}
 
 \newenvironment{amzcode}[2][]{
 	\VerbatimEnvironment
 	\begin{minted}[
-	linenos,
-	breaklines,
-	autogobble,
-	xleftmargin=2.6mm,
+	linenos,			% Display line numbers
+	breaklines,			% Allow line breaks
+	autogobble,			% Collapse extra white spaces
+	xleftmargin=3.15mm,
 	]{#2}}
 {\end{minted}}
+
+\newcommand{\amzinputcode}[2]{\inputminted[
+	linenos,			% Display line numbers
+	breaklines,			% Allow line breaks
+	autogobble,			% Collapse extra white spaces
+	xleftmargin=3.15mm,
+]{#1}{#2}}
 
 \newtcolorbox{genbox}[1]{amzdefaultstyle, genboxstyle, title={#1}}
 
@@ -242,7 +256,6 @@
 
 \newcommand{\dfntxt}[1]{{\textbf{#1}}}
 
-\usepackage{refcount}
 \newcommand{\makeamzindex}{
 	\addcontentsline{toc}{chapter}{Index}
 	\chapter*{Index}
@@ -277,8 +290,6 @@
 \newcommand{\id}{\text{id}}
 \newcommand{\bigO}{\mathcal{O}}
 \DeclareMathOperator{\laplace}{\mathscr{L}}
-
-
 \newcommand{\symdiff}{\bigtriangleup}
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
