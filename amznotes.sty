@@ -1,4 +1,4 @@
-% amzmath - Alex M Zhang math
+% amznotes - Alex M Zhang notes
 % Credit to David Zhang for the original template
 
 % To fix header for unnumbered chapters, do:
@@ -6,24 +6,24 @@
 % \markboth{Chapter Title}{Chapter Title}
 
 % TODO:
-% 	- make math in box titles bold
-%	- fix spacing of itemize and enumerate
-%	- hide index sections with no contents
+%   - make math in box titles bold
+%   - fix spacing of itemize and enumerate
+%   - hide index sections with no contents
 
-\ProvidesPackage{amzmath}[2023/01/24 amzmath]
+\ProvidesPackage{amznotes}[2023/01/26 amznotes]
 
-\RequirePackage{mathtools}				% for math macros; also loads amsmath
-\RequirePackage{fontspec} 				% set main font
-\RequirePackage{unicode-math} 			% set math font; replaces amssymb
-\RequirePackage[dvipsnames]{xcolor}		% pretty colors
-\RequirePackage{hyperref}				% links in pdf viewers; will be underlined in pdf viewer only
-\RequirePackage{fancyhdr}				% fancy headers
-\RequirePackage{lastpage}				% "X of Y" footer
-\RequirePackage{parskip}				% new line after each paragraph w/o indent
-\RequirePackage{setspace}				% 1.5 line spacing
-\RequirePackage[explicit]{titlesec}		% chapter styling
-\RequirePackage[most,minted]{tcolorbox}	% pretty boxes
-\RequirePackage{minted}					% syntax coloring for code
+\RequirePackage{mathtools}              % for math macros; also loads amsmath
+\RequirePackage{fontspec}               % set main font
+\RequirePackage{unicode-math}           % set math font; replaces amssymb
+\RequirePackage[dvipsnames]{xcolor}     % pretty colors
+\RequirePackage{hyperref}               % links in pdf viewers; will be underlined in pdf viewer only
+\RequirePackage{fancyhdr}               % fancy headers
+\RequirePackage{lastpage}               % "X of Y" footer
+\RequirePackage{parskip}                % new line after each paragraph w/o indent
+\RequirePackage{setspace}               % 1.5 line spacing
+\RequirePackage[explicit]{titlesec}     % chapter styling
+\RequirePackage[most,minted]{tcolorbox} % pretty boxes
+\RequirePackage{minted}                 % syntax coloring for code
 
 % ------------------------------------------------------------
 % FONTS
@@ -61,9 +61,9 @@
 
 \hypersetup{
     colorlinks=false,
-	linkbordercolor=black,
-	urlbordercolor=blue,
-	pdfborderstyle={/S/U/W 1}	% Underline links; only appears in pdf viewer, not printed
+    linkbordercolor=black,
+    urlbordercolor=blue,
+    pdfborderstyle={/S/U/W 1}   % Underline links; only appears in pdf viewer, not printed
 }
 
 % ------------------------------------------------------------
@@ -75,24 +75,24 @@
 {
     \begin{tcolorbox}[
         enhanced,
-		left=23mm,
-		right=25mm,
-		top=2mm,
-		spread sidewards,
-		sharp corners,
-		colback=amzchaptercolor,
-		colframe=amzchaptercolor,
-		boxrule=1mm,
+        left=23mm,
+        right=25mm,
+        top=2mm,
+        spread sidewards,
+        sharp corners,
+        colback=amzchaptercolor,
+        colframe=amzchaptercolor,
+        boxrule=1mm,
         title=\thechapter,
         attach boxed title to top right={xshift=-15mm, yshift=-4mm},
         boxed title style={
-			size=small,
-			colback=amzchaptercolor,
-			colframe=white
-		}
+            size=small,
+            colback=amzchaptercolor,
+            colframe=white
+        }
     ]
         \strut \textcolor{white}{#1}
-	\end{tcolorbox}
+    \end{tcolorbox}
 }
 
 \titleformat{name=\chapter,numberless}[display]{\normalfont\huge\bfseries}
@@ -101,18 +101,17 @@
 {
     \begin{tcolorbox}[
         enhanced,
-		left=23mm,
-		right=25mm,
-		top=2mm,
-		spread sidewards,
-		sharp corners,
-		colback=amzchaptercolor,
-		colframe=amzchaptercolor,
-		boxrule=1mm,
-		%drop fuzzy shadow,
+        left=23mm,
+        right=25mm,
+        top=2mm,
+        spread sidewards,
+        sharp corners,
+        colback=amzchaptercolor,
+        colframe=amzchaptercolor,
+        boxrule=1mm,
     ]
         \strut \textcolor{white}{#1}
-	\end{tcolorbox}
+    \end{tcolorbox}
 }
 
 \titlespacing*{\chapter}{0pt}{-40mm}{-15mm}
@@ -126,9 +125,9 @@
 \cfoot{\thepage\ of \pageref{LastPage}}
 
 \fancypagestyle{plain}{
-	\renewcommand{\headrulewidth}{0pt}
-	\fancyhead{}
-	\cfoot[C]{\thepage\ of \pageref{LastPage}}
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyhead{}
+    \cfoot[C]{\thepage\ of \pageref{LastPage}}
 }
 
 % ------------------------------------------------------------
@@ -137,61 +136,64 @@
 \newcommand{\amztitlesep}{\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}}
 
 \tcbset{
-	coolshadow/.style={
-		drop fuzzy shadow,
-	},
+    coolshadow/.style={
+        drop fuzzy shadow,
+    },
     amzdefaultstyle/.style={
-        enhanced,					%
-        fonttitle=\strut\bfseries,	% strut for uniform title height
+        enhanced,
+        fonttitle=\strut\bfseries,  % strut for uniform title height
         sharp corners,
-		boxrule=0pt,
-		frame hidden,
+        boxrule=0pt,
+        frame hidden,
         segmentation style={solid,opacity=0.2,line width=1pt},
         separator sign={\amztitlesep},
         parbox=false,
-		%breakable,
+        %breakable,
         coolshadow
     },
-	dfnboxstyle/.style={
-		amzdefaultstyle,
+    dfnboxstyle/.style={
+        amzdefaultstyle,
         frame style={fill=amzdfnboxcolor!75!black},
         interior style={fill=amzdfnboxcolor!5!white}
     },
     thmboxstyle/.style={
-		amzdefaultstyle,
+        amzdefaultstyle,
         frame style={fill=amzthmboxcolor!75!black},
         interior style={fill=amzthmboxcolor!5!white}
     },
-	exboxstyle/.style={
-		amzdefaultstyle,
-		frame style={fill=amzexboxcolor!75!black},
-		interior style={fill=amzexboxcolor!5!white}
-	},
-	genboxstyle/.style={
-		amzdefaultstyle,
-		frame style={fill=amzgenboxcolor!75!black},
-		interior style={fill=amzgenboxcolor!5!white}
-	},
-	tecboxstyle/.style={
-		amzdefaultstyle,
-		frame style={fill=amztecboxcolor!75!black},
-		interior style={fill=amztecboxcolor!5!white}
-	},
-	codeboxstyle/.style={
-		amzdefaultstyle,
-		breakable,
-		frame style={fill=amzcodeboxcolor!75!black},
-		interior style={fill=amzcodeboxcolor!5!white},
-		overlay={\begin{tcbclipinterior}\fill[black!15!white] (frame.south west) rectangle ([xshift=5mm]frame.north west);\end{tcbclipinterior}}
-	},
-	noteboxstyle/.style={
-		enhanced,
-		boxrule=0pt,frame hidden,
-		borderline west={4pt}{0pt}{WildStrawberry!75!black},
-		colback=amznoteboxcolor!7!white,
-		sharp corners,
-		coolshadow
-	}
+    exboxstyle/.style={
+        amzdefaultstyle,
+        frame style={fill=amzexboxcolor!75!black},
+        interior style={fill=amzexboxcolor!5!white}
+    },
+    genboxstyle/.style={
+        amzdefaultstyle,
+        frame style={fill=amzgenboxcolor!75!black},
+        interior style={fill=amzgenboxcolor!5!white}
+    },
+    tecboxstyle/.style={
+        amzdefaultstyle,
+        frame style={fill=amztecboxcolor!75!black},
+        interior style={fill=amztecboxcolor!5!white}
+    },
+    codeboxstyle/.style={
+        amzdefaultstyle,
+        breakable,
+        frame style={fill=amzcodeboxcolor!75!black},
+        interior style={fill=amzcodeboxcolor!5!white},
+        overlay={\begin{tcbclipinterior}\fill[darkgray!20!white] (frame.south west) rectangle ([xshift=6mm]frame.north west);\end{tcbclipinterior}},
+        skin=bicolor,
+        collower=white,
+        colbacklower=darkgray
+    },
+    noteboxstyle/.style={
+        enhanced,
+        boxrule=0pt,frame hidden,
+        borderline west={4pt}{0pt}{WildStrawberry!75!black},
+        colback=amznoteboxcolor!7!white,
+        sharp corners,
+        coolshadow
+    }
 }
 
 \newtcbtheorem[auto counter,number within=section,list inside={dfn}]{dfnbox}{Definition}{dfnboxstyle}{dfn}
@@ -208,20 +210,20 @@
 \newtcbtheorem[auto counter,number within=section,list inside={code}]{codebox}{Code Snippet}{codeboxstyle}{code}
 
 \newenvironment{amzcode}[2][]{
-	\VerbatimEnvironment
-	\begin{minted}[
-	linenos,			% Display line numbers
-	breaklines,			% Allow line breaks
-	autogobble,			% Collapse extra white spaces
-	xleftmargin=3.15mm,
-	]{#2}}
+    \VerbatimEnvironment
+    \begin{minted}[
+    linenos,            % Display line numbers
+    breaklines,         % Allow line breaks
+    autogobble,         % Collapse extra white spaces
+    xleftmargin=3.15mm,
+    ]{#2}}
 {\end{minted}}
 
 \newcommand{\amzinputcode}[2]{\inputminted[
-	linenos,			% Display line numbers
-	breaklines,			% Allow line breaks
-	autogobble,			% Collapse extra white spaces
-	xleftmargin=3.15mm,
+    linenos,            % Display line numbers
+    breaklines,         % Allow line breaks
+    autogobble,         % Collapse extra white spaces
+    xleftmargin=3.15mm,
 ]{#1}{#2}}
 
 \newtcolorbox{genbox}[1]{amzdefaultstyle, genboxstyle, title={#1}}
@@ -245,10 +247,10 @@
 % FIGURES
 
 \NewEnviron{amzgraph}{
-	\begin{tikzpicture}[shorten >=1pt,->]
-		\tikzstyle{vertex}=[circle,fill=Dandelion!50,minimum size=12pt,inner sep=2pt]
-		\BODY
-	\end{tikzpicture}
+    \begin{tikzpicture}[shorten >=1pt,->]
+        \tikzstyle{vertex}=[circle,fill=Dandelion!50,minimum size=12pt,inner sep=2pt]
+        \BODY
+    \end{tikzpicture}
 }
 
 % ------------------------------------------------------------
@@ -257,22 +259,21 @@
 \newcommand{\dfntxt}[1]{{\textbf{#1}}}
 
 \newcommand{\makeamzindex}{
-	\addcontentsline{toc}{chapter}{Index}
-	\chapter*{Index}
+    \addcontentsline{toc}{chapter}{Index}
+    \chapter*{Index}
 
-	\renewcommand{\headrulewidth}{0pt}  % Remove header for index
-	\fancyhead{}
+    \renewcommand{\headrulewidth}{0pt}  % Remove header for index
+    \fancyhead{}
 
-	\tcblistof[\section*]{dfn}{Definitions}
-	\newpage
-	\tcblistof[\section*]{ex}{Examples}
-	\newpage
-	\tcblistof[\section*]{thm}{Theorems}
-	\newpage
-	\tcblistof[\section*]{tec}{Techniques}
-	\newpage
-	\tcblistof[\section*]{code}{Code Snippets}
-
+    \tcblistof[\section*]{dfn}{Definitions}
+    \newpage
+    \tcblistof[\section*]{ex}{Examples}
+    \newpage
+    \tcblistof[\section*]{thm}{Theorems}
+    \newpage
+    \tcblistof[\section*]{tec}{Techniques}
+    \newpage
+    \tcblistof[\section*]{code}{Code Snippets}
 }
 
 % ------------------------------------------------------------
@@ -299,8 +300,8 @@
 % Function Restriction
 % From https://tex.stackexchange.com/a/22255
 \newcommand\restrict[2]{{
-	\left.\kern-\nulldelimiterspace
-	#1
-	\vphantom{\big|}
-	\right|_{#2}
+    \left.\kern-\nulldelimiterspace
+    #1
+    \vphantom{\big|}
+    \right|_{#2}
 }}
