@@ -8,6 +8,9 @@
 
 % TODO:
 %   - make math in box titles bold
+%   - make macro for lower case namerefs
+%   - fix big numbers messing up index
+%   - maybe make index two columns?
 
 \ProvidesPackage{amznotes}[2023/01/26 amznotes]
 
@@ -260,8 +263,8 @@
 % COLOR BOX ENVIRONMENTS & COMMANDS
 
 \newenvironment{dfnbox}[2]{
-    \begin{tcdfnbox}{#1}{#2}
     \global\dfnboxusedtrue
+    \begin{tcdfnbox}{#1}{#2}
 }{
     \end{tcdfnbox}
 }
@@ -273,8 +276,8 @@
 }
 
 \newenvironment{exbox}[2]{
-    \begin{tcexbox}{#1}{#2}
     \global\exboxusedtrue
+    \begin{tcexbox}{#1}{#2}
 }{
     \end{tcexbox}
 }
@@ -286,8 +289,8 @@
 }
 
 \newenvironment{tecbox}[2]{
-    \begin{tctecbox}{#1}{#2}
     \global\tecboxusedtrue
+    \begin{tctecbox}{#1}{#2}
 }{
     \end{tctecbox}
 }
@@ -300,8 +303,8 @@
 
 \ifamznotes@math
     \newenvironment{thmbox}[2]{
-        \begin{tcthmbox}{#1}{#2}
         \global\thmboxusedtrue
+        \begin{tcthmbox}{#1}{#2}
     }{
         \end{tcthmbox}
     }
@@ -316,8 +319,8 @@
 
 \ifamznotes@code
     \newenvironment{codebox}[2]{
-        \begin{tccodebox}{#1}{#2}
         \global\codeboxusedtrue
+        \begin{tccodebox}{#1}{#2}
     }{
         \end{tccodebox}
     }
