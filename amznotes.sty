@@ -1,3 +1,4 @@
+% ------------------------------------------------------------
 % amznotes - Alex M Zhang notes
 % Credit to David Zhang for the original template
 
@@ -7,23 +8,41 @@
 
 % TODO:
 %   - make math in box titles bold
-%   - fix spacing of itemize and enumerate
-%   - hide index sections with no contents
 
 \ProvidesPackage{amznotes}[2023/01/26 amznotes]
 
-\RequirePackage{mathtools}              % for math macros; also loads amsmath
-\RequirePackage{fontspec}               % set main font
-\RequirePackage{unicode-math}           % set math font; replaces amssymb
-\RequirePackage[dvipsnames]{xcolor}     % pretty colors
-\RequirePackage{hyperref}               % links in pdf viewers; will be underlined in pdf viewer only
-\RequirePackage{fancyhdr}               % fancy headers
-\RequirePackage{lastpage}               % "X of Y" footer
-\RequirePackage{parskip}                % new line after each paragraph w/o indent
-\RequirePackage{setspace}               % 1.5 line spacing
-\RequirePackage[explicit]{titlesec}     % chapter styling
-\RequirePackage[most,minted]{tcolorbox} % pretty boxes
-\RequirePackage{minted}                 % syntax coloring for code
+% ------------------------------------------------------------
+% PROCESS OPTIONS
+
+\RequirePackage{kvoptions}
+\DeclareBoolOption{math}        % enables thmbox and math macros
+\DeclareBoolOption{code}        % enables codebox, amzcode, and \amzinputcode
+\ProcessKeyvalOptions{amznotes}
+
+% ------------------------------------------------------------
+% LOAD REQUIRED PACKAGES
+
+\RequirePackage{fontspec}           % set main font
+\RequirePackage{unicode-math}       % set math font; replaces amssymb
+\RequirePackage[dvipsnames]{xcolor} % pretty colors
+\RequirePackage{hyperref}           % hyperlinks in pdf viewers; will appear underlined only in pdf viewer
+\RequirePackage{fancyhdr}           % fancy headers
+\RequirePackage{lastpage}           % "X of Y" footer
+\RequirePackage{parskip}            % new line after each paragraph w/o indent
+\RequirePackage{setspace}           % 1.5 line spacing
+\RequirePackage[explicit]{titlesec} % chapter styling
+\RequirePackage[most]{tcolorbox}    % pretty boxes
+
+\ifamznotes@math
+    \RequirePackage{mathtools}      % for math macros; also loads amsmath
+    \RequirePackage{amsthm}         % syntax coloring for code
+    \renewcommand\qedsymbol{$\squoval$}
+\fi
+
+\ifamznotes@code
+    \RequirePackage{minted}         % syntax coloring for code
+    \tcbuselibrary{minted}
+\fi
 
 % ------------------------------------------------------------
 % FONTS
@@ -192,65 +211,148 @@
         borderline west={4pt}{0pt}{WildStrawberry!75!black},
         colback=amznoteboxcolor!7!white,
         sharp corners,
-        coolshadow
     }
 }
 
-\newtcbtheorem[auto counter,number within=section,list inside={dfn}]{dfnbox}{Definition}{dfnboxstyle}{dfn}
+\newtcbtheorem[auto counter,number within=section,list inside={dfn}]{tcdfnbox}{Definition}{dfnboxstyle}{dfn}
+\newif\ifdfnboxused
 
-\newtcbtheorem[auto counter,number within=section,list inside={thm}]{thmbox}{Theorem}{thmboxstyle}{thm}
+\newtcbtheorem[auto counter,number within=section,list inside={ex}]{tcexbox}{Example}{exboxstyle}{ex}
+\newif\ifexboxused
 
-\newtcbtheorem[auto counter,number within=section,list inside={ex}]{exbox}{Example}{exboxstyle}{ex}
-
-\newtcbtheorem[auto counter,number within=section,list inside={tec}]{tecbox}{Technique}{tecboxstyle}{tec}
-
-% Set size and font of minted line numbers
-\renewcommand{\theFancyVerbLine}{\ttfamily\scriptsize{\arabic{FancyVerbLine}}}
-
-\newtcbtheorem[auto counter,number within=section,list inside={code}]{codebox}{Code Snippet}{codeboxstyle}{code}
-
-\newenvironment{amzcode}[2][]{
-    \VerbatimEnvironment
-    \begin{minted}[
-    linenos,            % Display line numbers
-    breaklines,         % Allow line breaks
-    autogobble,         % Collapse extra white spaces
-    xleftmargin=3.15mm,
-    ]{#2}}
-{\end{minted}}
-
-\newcommand{\amzinputcode}[2]{\inputminted[
-    linenos,            % Display line numbers
-    breaklines,         % Allow line breaks
-    autogobble,         % Collapse extra white spaces
-    xleftmargin=3.15mm,
-]{#1}{#2}}
+\newtcbtheorem[auto counter,number within=section,list inside={tec}]{tctecbox}{Technique}{tecboxstyle}{tec}
+\newif\iftecboxused
 
 \newtcolorbox{genbox}[1]{amzdefaultstyle, genboxstyle, title={#1}}
 
 \newtcolorbox{notebox}{noteboxstyle}
 
-% \newtcblisting[auto counter,number within=section,list inside={code}]{codebox}[2]{
-%     amzdefaultstyle,
-%     title={\hspace*{-2mm}Code Snippet\amztitlesep\ {#2}},
-%     left=6mm,
-%     listing engine=minted,
-%     minted style=colorful,
-%     minted language={#1},
-%     minted options={breaklines,autogobble,linenos,numbersep=4mm},
-%     listing only,
-%     overlay={\begin{tcbclipinterior}\fill[black!15!white] (frame.south west)
-%     rectangle ([xshift=5mm]frame.north west);\end{tcbclipinterior}}
-% }
+\ifamznotes@math
+    \newtcbtheorem[auto counter,number within=section,list inside={thm}]{tcthmbox}{Theorem}{thmboxstyle}{thm}
+\fi
+\newif\ifthmboxused
+
+\ifamznotes@code
+    \renewcommand{\theFancyVerbLine}{\ttfamily\scriptsize{\arabic{FancyVerbLine}}}
+
+    \newtcbtheorem[auto counter,number within=section,list inside={code}]{tccodebox}{Code Snippet}{codeboxstyle}{code}
+
+    \newenvironment{amzcode}[2][]{
+        \VerbatimEnvironment
+        \begin{minted}[
+        linenos,            % Display line numbers
+        breaklines,         % Allow line breaks
+        autogobble,         % Collapse extra white spaces
+        xleftmargin=3.15mm,
+        ]{#2}}
+    {\end{minted}}
+
+    \newcommand{\amzinputcode}[2]{\inputminted[
+        linenos,            % Display line numbers
+        breaklines,         % Allow line breaks
+        autogobble,         % Collapse extra white spaces
+        xleftmargin=3.15mm,
+    ]{#1}{#2}}
+\fi
+\newif\ifcodeboxused
 
 % ------------------------------------------------------------
-% FIGURES
+% COLOR BOX ENVIRONMENTS & COMMANDS
 
-\NewEnviron{amzgraph}{
-    \begin{tikzpicture}[shorten >=1pt,->]
-        \tikzstyle{vertex}=[circle,fill=Dandelion!50,minimum size=12pt,inner sep=2pt]
-        \BODY
-    \end{tikzpicture}
+\newenvironment{dfnbox}[2]{
+    \begin{tcdfnbox}{#1}{#2}
+    \global\dfnboxusedtrue
+}{
+    \end{tcdfnbox}
+}
+
+\newenvironment{dfnbox*}[1]{
+    \begin{tcdfnbox*}{#1}
+}{
+    \end{tcdfnbox*}
+}
+
+\newenvironment{exbox}[2]{
+    \begin{tcexbox}{#1}{#2}
+    \global\exboxusedtrue
+}{
+    \end{tcexbox}
+}
+
+\newenvironment{exbox*}[1]{
+    \begin{tcexbox*}{#1}
+}{
+    \end{tcexbox*}
+}
+
+\newenvironment{tecbox}[2]{
+    \begin{tctecbox}{#1}{#2}
+    \global\tecboxusedtrue
+}{
+    \end{tctecbox}
+}
+
+\newenvironment{tecbox*}[1]{
+    \begin{tctecbox*}{#1}
+}{
+    \end{tctecbox*}
+}
+
+\ifamznotes@math
+    \newenvironment{thmbox}[2]{
+        \begin{tcthmbox}{#1}{#2}
+        \global\thmboxusedtrue
+    }{
+        \end{tcthmbox}
+    }
+
+
+    \newenvironment{thmbox*}[1]{
+        \begin{tcthmbox*}{#1}
+    }{
+        \end{tcthmbox*}
+    }
+\fi
+
+\ifamznotes@code
+    \newenvironment{codebox}[2]{
+        \begin{tccodebox}{#1}{#2}
+        \global\codeboxusedtrue
+    }{
+        \end{tccodebox}
+    }
+
+    \newenvironment{codebox*}[1]{
+        \begin{tccodebox*}{#1}
+    }{
+        \end{tccodebox*}
+    }
+\fi
+
+\newcommand{\amzindex}{
+    \addcontentsline{toc}{chapter}{Index}
+    \chapter*{Index}
+
+    % Remove header for index
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyhead{}
+
+    % Add references
+    \ifdfnboxused
+        \tcblistof[\section*]{dfn}{Definitions}
+    \fi
+    \ifexboxused
+        \tcblistof[\section*]{ex}{Examples}
+    \fi
+    \iftecboxused
+        \tcblistof[\section*]{tec}{Techniques}
+    \fi
+    \ifthmboxused
+        \tcblistof[\section*]{thm}{Theorems}
+    \fi
+    \ifcodeboxused
+        \tcblistof[\section*]{code}{Code Snippets}
+    \fi
 }
 
 % ------------------------------------------------------------
@@ -258,50 +360,34 @@
 
 \newcommand{\dfntxt}[1]{{\textbf{#1}}}
 
-\newcommand{\makeamzindex}{
-    \addcontentsline{toc}{chapter}{Index}
-    \chapter*{Index}
-
-    \renewcommand{\headrulewidth}{0pt}  % Remove header for index
-    \fancyhead{}
-
-    \tcblistof[\section*]{dfn}{Definitions}
-    \newpage
-    \tcblistof[\section*]{ex}{Examples}
-    \newpage
-    \tcblistof[\section*]{thm}{Theorems}
-    \newpage
-    \tcblistof[\section*]{tec}{Techniques}
-    \newpage
-    \tcblistof[\section*]{code}{Code Snippets}
-}
-
 % ------------------------------------------------------------
 % MATH MACROS
 
-\newcommand{\rel}[1]{\mathrel{\mathcal{#1}}}
+\ifamznotes@math
+    \newcommand{\rel}[1]{\mathrel{\mathcal{#1}}}
 
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\C}{\mathbb{C}}
-\newcommand{\F}{\mathbb{F}}
+    \newcommand{\N}{\mathbb{N}}
+    \newcommand{\Z}{\mathbb{Z}}
+    \newcommand{\Q}{\mathbb{Q}}
+    \newcommand{\R}{\mathbb{R}}
+    \newcommand{\C}{\mathbb{C}}
+    \newcommand{\F}{\mathbb{F}}
 
-\newcommand{\id}{\text{id}}
-\newcommand{\bigO}{\mathcal{O}}
-\DeclareMathOperator{\laplace}{\mathscr{L}}
-\newcommand{\symdiff}{\bigtriangleup}
+    \newcommand{\id}{\text{id}}
+    \newcommand{\bigO}{\mathcal{O}}
+    \DeclareMathOperator{\laplace}{\mathscr{L}}
+    \newcommand{\symdiff}{\bigtriangleup}
 
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}
-\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
-\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+    \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+    \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+    \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
-% Function Restriction
-% From https://tex.stackexchange.com/a/22255
-\newcommand\restrict[2]{{
-    \left.\kern-\nulldelimiterspace
-    #1
-    \vphantom{\big|}
-    \right|_{#2}
-}}
+    % Function Restriction
+    % From https://tex.stackexchange.com/a/22255
+    \newcommand\restrict[2]{{
+        \left.\kern-\nulldelimiterspace
+        #1
+        \vphantom{\big|}
+        \right|_{#2}
+    }}
+\fi

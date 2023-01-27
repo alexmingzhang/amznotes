@@ -1,54 +1,93 @@
 \documentclass[12pt]{report}
+
 \usepackage[margin=1in]{geometry}
-
-\usepackage{amzmath}    % amzmath.sty
-
-\usepackage{amsthm}     % theorems
+\usepackage[math, code]{amznotes}
 \usepackage{lipsum}     % filler text
-\usepackage{fancyvrb}   % inline code
 
 \begin{document}
-    \chapter{Chapter title}
+    \tableofcontents
 
-    \lipsum[1]
-
-    \begin{dfnbox}{asdf}{asdf}
-        \dfntxt{asdf} is the word you get when you press the first four home-row keys from left to right.
+    \chapter{Overview}
+    \section{Sample}
+    \begin{dfnbox}{amznotes}{amznotes}
+        \dfntxt{amznotes} is a \LaTeX\ package that makes it easy to write pretty notes.
     \end{dfnbox}
 
     \begin{thmbox}{Cool Theorem}{cool}
         This \LaTeX\ template is cool.
         \tcblower
         \begin{proof}
-            \lipsum[1]
+            Here is what some math looks like:
+            \[ \forall (n \in \N) \left[ \sum_{i=1}^n i = \frac{n(n+1)}{2} \right] \]
+            \[ \laplace \{ f \} (s) = \int_{0}^{\infty} e^{-st} f(t)\ dt \]
+            Some more math:
+            \begin{align*}
+                \floor{x} &= \max \{ n \in \Z : n \leq x \} \\
+                \ceil{x} &= \min \{ n \in \Z : n \geq x \}
+            \end{align*}
+            The math is good.
         \end{proof}
     \end{thmbox}
 
     As seen in \nameref{thm:cool} (Theorem \ref{thm:cool}), this template is pretty cool.
 
-    \begin{exbox}{Template}{}
-        \lipsum[1]
-    \end{exbox}
+    \section{Installation}
+    To install this package, download the \href{https://raw.githubusercontent.com/alexmingzhang/latex-notes-template/main/amznotes.sty}{amznotes.sty} file and follow \href{https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te}{this guide}\footnote{https://tex.stackexchange.com/questions/1137/where-do-i-place-my-own-sty-or-cls-files-to-make-them-available-to-all-my-te}. Alternatively, you can simply add the amznotes.sty file to the same directory as the \texttt{.tex} file you want to use it with.
 
-    \begin{tecbox}{Using This Template}{}
-        To use this template, simply download the \href{https://raw.githubusercontent.com/alexmingzhang/latex-notes-template/main/amzmath.sty}{amzmath.sty} file, and include it using the command \verb|\usepackage{amzmath}|.
-    \end{tecbox}
+    \section{Usage}
+    Once installed, you can include amznotes.sty using the command  \texttt{\textbackslash usepackage\textbraceleft amzmath\textbraceright}.
 
-    \begin{codebox}{Cool Code}{cool}
-        \begin{amzcode}{c++}
-            #include <iostream>
-
-            int main() {
-                std::cout << "Wassup" << std::endl;
-                return 0;
-            }
+    \begin{codebox}{Using amznotes}{cool}
+        \begin{amzcode}{latex}
+            \documentclass[12pt]{report}
+            \usepackage[math, code]{amznotes}
         \end{amzcode}
     \end{codebox}
 
-    The \nameref{code:cool} is pretty cool!
+    The \texttt{math} option enables \texttt{thmbox} and various math macros. The \texttt{code} option enables \texttt{codebox} and code environments.
 
-    \chapter{Really really long title that has to use two separate lines}
+    Using the boxes is pretty straight-forward. They're based on the \texttt{tcbtheorem} from \texttt{tcolorbox}. We can see how to use one below:
+    \begin{codebox}{Using boxes}{boxes}
+        \begin{amzcode}{latex}
+            \begin{exbox}{Cool Example}{coolexample}
+                This is my example!
+            \end{exbox}
+            \nameref{ex:coolexample} (example \ref{ex:coolexample}) is pretty cool.
+        \end{amzcode}
+    \end{codebox}
 
-    \makeamzindex
+    This is what Code Snippet \ref{code:boxes} produces:
+
+    \begin{notebox}
+        \begin{exbox}{Cool Example}{coolexample}
+            This is my example!
+        \end{exbox}
+        \nameref{ex:coolexample} (example \ref{ex:coolexample}) is pretty cool.
+    \end{notebox}
+
+    List of possible boxes:
+    \begin{itemize}
+        \item \texttt{dfnbox} -- definition box
+        \item \texttt{exbox} -- example box
+        \item \texttt{tecbox} -- technique box
+        \item \texttt{thmbox} -- theorem box (with package option \texttt{math})
+        \item \texttt{codebox} -- code box (with package option \texttt{code})
+
+    \end{itemize}
+
+    \chapter{Really really long chapter title that has to use more than one line because it is so long}
+    \lipsum[100]
+    \lipsum[101]
+
+    \lipsum[102]
+
+    \begin{notebox}
+        \lipsum[21]
+    \end{notebox}
+
+    \lipsum[104]
+
+
+    \amzindex
 
 \end{document}
