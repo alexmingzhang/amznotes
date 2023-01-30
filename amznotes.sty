@@ -34,6 +34,7 @@
 \RequirePackage{parskip}            % new line after each paragraph w/o indent
 \RequirePackage{setspace}           % 1.5 line spacing
 \RequirePackage[explicit]{titlesec} % chapter styling
+\RequirePackage{sectsty}            % section styling
 \RequirePackage[most]{tcolorbox}    % pretty boxes
 
 \ifamznotes@math
@@ -69,14 +70,15 @@
 % ------------------------------------------------------------
 % COLORS
 
-\colorlet{amzchaptercolor}{RoyalBlue}
-\colorlet{amzdfnboxcolor}{RoyalBlue}
-\colorlet{amzthmboxcolor}{RoyalPurple}
-\colorlet{amzexboxcolor}{Dandelion}
-\colorlet{amzgenboxcolor}{PineGreen}
-\colorlet{amztecboxcolor}{WildStrawberry}
-\colorlet{amzcodeboxcolor}{darkgray}
-\colorlet{amznoteboxcolor}{WildStrawberry}
+% Color palette from https://flatuicolors.com/palette/us
+\definecolor{amzchaptercolor}{HTML}{0984e3}
+\definecolor{amzdfnboxcolor}{HTML}{0984e3}
+\definecolor{amzthmboxcolor}{HTML}{6c5ce7}
+\definecolor{amzexboxcolor}{HTML}{fdcb6e}
+\definecolor{amzgenboxcolor}{HTML}{00b894}
+\definecolor{amztecboxcolor}{HTML}{e17055}
+\definecolor{amzcodeboxcolor}{HTML}{2d3436}
+\definecolor{amznoteboxcolor}{HTML}{d63031}
 
 % ------------------------------------------------------------
 % LINKS
@@ -139,6 +141,11 @@
 \titlespacing*{\chapter}{0pt}{-40mm}{-15mm}
 
 % ------------------------------------------------------------
+% SECTION STYLING
+
+% \sectionfont{\color{amzchaptercolor}}  % sets colour of sections
+
+% ------------------------------------------------------------
 % HEADER STYLING
 
 \pagestyle{fancy}
@@ -164,44 +171,47 @@
     amzdefaultstyle/.style={
         enhanced,
         fonttitle=\strut\bfseries,  % strut for uniform title height
-        sharp corners,
         boxrule=0pt,
         frame hidden,
-        segmentation style={solid,opacity=0.2,line width=1pt},
         separator sign={\amztitlesep},
-        parbox=false,
-        %breakable,
+        parbox=false,               % normal paragraph spacing
+        breakable,
         coolshadow
     },
     dfnboxstyle/.style={
         amzdefaultstyle,
-        frame style={fill=amzdfnboxcolor!75!black},
-        interior style={fill=amzdfnboxcolor!5!white}
+        frame style={fill=amzdfnboxcolor!85!black},
+        interior style={fill=amzdfnboxcolor!5!white},
+        segmentation style={solid,draw=amzdfnboxcolor!50!black,opacity=0.25,line width=1pt},
     },
     thmboxstyle/.style={
         amzdefaultstyle,
-        frame style={fill=amzthmboxcolor!75!black},
-        interior style={fill=amzthmboxcolor!5!white}
+        frame style={fill=amzthmboxcolor!85!black},
+        interior style={fill=amzthmboxcolor!5!white},
+        segmentation style={solid,draw=amzthmboxcolor!50!black,opacity=0.25,line width=1pt}
     },
     exboxstyle/.style={
         amzdefaultstyle,
-        frame style={fill=amzexboxcolor!75!black},
-        interior style={fill=amzexboxcolor!5!white}
+        frame style={fill=amzexboxcolor!85!black},
+        interior style={fill=amzexboxcolor!5!white},
+        segmentation style={solid,draw=amzexboxcolor!50!black,opacity=0.25,line width=1pt}
     },
     genboxstyle/.style={
         amzdefaultstyle,
-        frame style={fill=amzgenboxcolor!75!black},
-        interior style={fill=amzgenboxcolor!5!white}
+        frame style={fill=amzgenboxcolor!85!black},
+        interior style={fill=amzgenboxcolor!5!white},
+        segmentation style={solid,draw=amzgenboxcolor!50!black,opacity=0.25,line width=1pt}
     },
     tecboxstyle/.style={
         amzdefaultstyle,
-        frame style={fill=amztecboxcolor!75!black},
-        interior style={fill=amztecboxcolor!5!white}
+        frame style={fill=amztecboxcolor!85!black},
+        interior style={fill=amztecboxcolor!5!white},
+        segmentation style={solid,draw=amztecboxcolor!50!black,opacity=0.25,line width=1pt}
     },
     codeboxstyle/.style={
         amzdefaultstyle,
         breakable,
-        frame style={fill=amzcodeboxcolor!75!black},
+        frame style={fill=amzcodeboxcolor!85!black},
         interior style={fill=amzcodeboxcolor!5!white},
         overlay={\begin{tcbclipinterior}\fill[darkgray!20!white] (frame.south west) rectangle ([xshift=6mm]frame.north west);\end{tcbclipinterior}},
         skin=bicolor,
@@ -210,8 +220,9 @@
     },
     noteboxstyle/.style={
         enhanced,
-        boxrule=0pt,frame hidden,
-        borderline west={4pt}{0pt}{WildStrawberry!75!black},
+        boxrule=0pt,
+        frame hidden,
+        borderline west={4pt}{0pt}{amznoteboxcolor},
         colback=amznoteboxcolor!7!white,
         sharp corners,
     }
@@ -246,7 +257,7 @@
         linenos,            % Display line numbers
         breaklines,         % Allow line breaks
         autogobble,         % Collapse extra white spaces
-        xleftmargin=3.15mm,
+        xleftmargin=3.75mm,
         ]{#2}}
     {\end{minted}}
 
@@ -254,7 +265,7 @@
         linenos,            % Display line numbers
         breaklines,         % Allow line breaks
         autogobble,         % Collapse extra white spaces
-        xleftmargin=3.15mm,
+        xleftmargin=3.75mm,
     ]{#1}{#2}}
 \fi
 \newif\ifcodeboxused
@@ -361,7 +372,7 @@
 % ------------------------------------------------------------
 % TEXT MACROS
 
-\newcommand{\dfntxt}[1]{{\textbf{#1}}}
+\newcommand{\dfntxt}[1]{\textbf{#1}}
 
 % ------------------------------------------------------------
 % MATH MACROS
@@ -381,7 +392,10 @@
     \DeclareMathOperator{\laplace}{\mathscr{L}}
     \newcommand{\symdiff}{\bigtriangleup}
 
+    \newcommand{\alg}[1]{{\left\langle {#1} \right\rangle}}
+
     \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+    \DeclarePairedDelimiter\norm{\lVert}{\rVert}
     \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
     \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
