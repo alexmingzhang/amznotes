@@ -12,7 +12,7 @@
 %   - fix big numbers messing up index
 %   - maybe make index two columns?
 
-\ProvidesPackage{amznotes}[2023/01/26 amznotes]
+\ProvidesPackage{amznotes}[2023/02/02 amznotes]
 
 % ------------------------------------------------------------
 % PROCESS OPTIONS
@@ -34,12 +34,12 @@
 \RequirePackage{parskip}            % new line after each paragraph w/o indent
 \RequirePackage{setspace}           % 1.5 line spacing
 \RequirePackage[explicit]{titlesec} % chapter styling
-\RequirePackage{sectsty}            % section styling
 \RequirePackage[most]{tcolorbox}    % pretty boxes
+\RequirePackage{ifthen}             % disable index entries not being used
 
 \ifamznotes@math
     \RequirePackage{mathtools}      % for math macros; also loads amsmath
-    \RequirePackage{amsthm}         % syntax coloring for code
+    \RequirePackage{amsthm}
     \renewcommand\qedsymbol{$\squoval$}
 \fi
 
@@ -54,9 +54,9 @@
 \setmainfont{STIXTwoText}[
   Extension = .otf,
   UprightFont = *-Regular,
-  BoldFont = *-Bold,
+  BoldFont = *-SemiBold,
   ItalicFont = *-Italic,
-  BoldItalicFont = *-BoldItalic,
+  BoldItalicFont = *-SemiBoldItalic,
 ]
 \setmathfont{STIXTwoMath-Regular.otf}
 \setmathfont{STIXTwoMath-Regular.otf}[range={scr,bfscr},StylisticSet=01]
@@ -66,6 +66,7 @@
 % PAGE LAYOUT
 
 \onehalfspacing
+\renewcommand{\arraystretch}{1.25}
 
 % ------------------------------------------------------------
 % COLORS
@@ -93,7 +94,8 @@
 % ------------------------------------------------------------
 % CHAPTER STYLING
 
-\titleformat{\chapter}[display]{\normalfont\huge\bfseries}
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}
 {}
 {20pt}
 {
@@ -162,61 +164,22 @@
 % ------------------------------------------------------------
 % COLOR BOXES
 
-\newcommand{\amztitlesep}{\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}}
-
 \tcbset{
-    coolshadow/.style={
-        drop fuzzy shadow,
-    },
     amzdefaultstyle/.style={
         enhanced,
         fonttitle=\strut\bfseries,  % strut for uniform title height
         boxrule=0pt,
         frame hidden,
-        separator sign={\amztitlesep},
+        separator sign={\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}},
         parbox=false,               % normal paragraph spacing
         breakable,
-        coolshadow
-    },
-    dfnboxstyle/.style={
-        amzdefaultstyle,
-        frame style={fill=amzdfnboxcolor!85!black},
-        interior style={fill=amzdfnboxcolor!5!white},
-        segmentation style={solid,draw=amzdfnboxcolor!50!black,opacity=0.25,line width=1pt},
-    },
-    thmboxstyle/.style={
-        amzdefaultstyle,
-        frame style={fill=amzthmboxcolor!85!black},
-        interior style={fill=amzthmboxcolor!5!white},
-        segmentation style={solid,draw=amzthmboxcolor!50!black,opacity=0.25,line width=1pt}
-    },
-    exboxstyle/.style={
-        amzdefaultstyle,
-        frame style={fill=amzexboxcolor!85!black},
-        interior style={fill=amzexboxcolor!5!white},
-        segmentation style={solid,draw=amzexboxcolor!50!black,opacity=0.25,line width=1pt}
+        drop fuzzy shadow
     },
     genboxstyle/.style={
         amzdefaultstyle,
         frame style={fill=amzgenboxcolor!85!black},
         interior style={fill=amzgenboxcolor!5!white},
         segmentation style={solid,draw=amzgenboxcolor!50!black,opacity=0.25,line width=1pt}
-    },
-    tecboxstyle/.style={
-        amzdefaultstyle,
-        frame style={fill=amztecboxcolor!85!black},
-        interior style={fill=amztecboxcolor!5!white},
-        segmentation style={solid,draw=amztecboxcolor!50!black,opacity=0.25,line width=1pt}
-    },
-    codeboxstyle/.style={
-        amzdefaultstyle,
-        breakable,
-        frame style={fill=amzcodeboxcolor!85!black},
-        interior style={fill=amzcodeboxcolor!5!white},
-        overlay={\begin{tcbclipinterior}\fill[darkgray!20!white] (frame.south west) rectangle ([xshift=6mm]frame.north west);\end{tcbclipinterior}},
-        skin=bicolor,
-        collower=white,
-        colbacklower=darkgray
     },
     noteboxstyle/.style={
         enhanced,
@@ -225,31 +188,76 @@
         borderline west={4pt}{0pt}{amznoteboxcolor},
         colback=amznoteboxcolor!7!white,
         sharp corners,
+    },
+    codeboxstyle/.style={
+        overlay={\begin{tcbclipinterior}\fill[darkgray!20!white] (frame.south west) rectangle ([xshift=6mm]frame.north west);\end{tcbclipinterior}},
+        skin=bicolor,
+        collower=white,
+        colbacklower=darkgray
+    },
+}
+
+\newcommand{\amzindex}{
+    \addcontentsline{toc}{chapter}{Index}
+    \chapter*{Index}
+
+    % Remove header for index
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyhead{}
+}
+
+\newcommand{\addindexentry}[2]{%
+    \appto\amzindex{
+        \iftoggle{#2}{
+            \tcblistof[\section*]{#2}{#1}
+        }{}
     }
 }
 
-\newtcbtheorem[auto counter,number within=section,list inside={dfn}]{tcdfnbox}{Definition}{dfnboxstyle}{dfn}
-\newif\ifdfnboxused
+%\newamzbox{environment name}{title}{ref label}{color}[tcolorbox style]
+\NewDocumentCommand{\newamzbox}{m m m m O{}}{
+    \newtcbtheorem[auto counter,number within=section,list inside={#3}]{tc#1}{#2}{
+        amzdefaultstyle,
+        frame style={fill=#4!85!black},
+        interior style={fill=#4!5!white},
+        segmentation style={solid,draw=#4!50!black,opacity=0.25,line width=1pt},
+        #5
+    }{#3}
 
-\newtcbtheorem[auto counter,number within=section,list inside={ex}]{tcexbox}{Example}{exboxstyle}{ex}
-\newif\ifexboxused
+    \providetoggle{#3}
+    \settoggle{#3}{false}
 
-\newtcbtheorem[auto counter,number within=section,list inside={tec}]{tctecbox}{Technique}{tecboxstyle}{tec}
-\newif\iftecboxused
+    \newenvironment{#1}[2]{
+        \global\settoggle{#3}{true}
+        \begin{tc#1}{##1}{##2}
+    }{
+        \end{tc#1}
+    }
+
+    \newenvironment{#1*}[1]{
+        \begin{tc#1*}{##1}
+    }{
+        \end{tc#1*}
+    }
+
+    \addindexentry{#2s}{#3}
+}
+
+\newamzbox{dfnbox}{Definition}{dfn}{amzdfnboxcolor}
+\newamzbox{exbox}{Example}{ex}{amzexboxcolor}
+\newamzbox{tecbox}{Technique}{tec}{amztecboxcolor}
 
 \newtcolorbox{genbox}[1]{amzdefaultstyle, genboxstyle, title={#1}}
-
 \newtcolorbox{notebox}{noteboxstyle}
 
 \ifamznotes@math
-    \newtcbtheorem[auto counter,number within=section,list inside={thm}]{tcthmbox}{Theorem}{thmboxstyle}{thm}
+    \newamzbox{thmbox}{Theorem}{thm}{amzthmboxcolor}
 \fi
-\newif\ifthmboxused
 
 \ifamznotes@code
     \renewcommand{\theFancyVerbLine}{\ttfamily\scriptsize{\arabic{FancyVerbLine}}}
 
-    \newtcbtheorem[auto counter,number within=section,list inside={code}]{tccodebox}{Code Snippet}{codeboxstyle}{code}
+    \newamzbox{codebox}{Code Snippet}{code}{amzcodeboxcolor}[codeboxstyle]
 
     \newenvironment{amzcode}[2][]{
         \VerbatimEnvironment
@@ -268,111 +276,14 @@
         xleftmargin=3.75mm,
     ]{#1}{#2}}
 \fi
-\newif\ifcodeboxused
-
-% ------------------------------------------------------------
-% COLOR BOX ENVIRONMENTS & COMMANDS
-
-\newenvironment{dfnbox}[2]{
-    \global\dfnboxusedtrue
-    \begin{tcdfnbox}{#1}{#2}
-}{
-    \end{tcdfnbox}
-}
-
-\newenvironment{dfnbox*}[1]{
-    \begin{tcdfnbox*}{#1}
-}{
-    \end{tcdfnbox*}
-}
-
-\newenvironment{exbox}[2]{
-    \global\exboxusedtrue
-    \begin{tcexbox}{#1}{#2}
-}{
-    \end{tcexbox}
-}
-
-\newenvironment{exbox*}[1]{
-    \begin{tcexbox*}{#1}
-}{
-    \end{tcexbox*}
-}
-
-\newenvironment{tecbox}[2]{
-    \global\tecboxusedtrue
-    \begin{tctecbox}{#1}{#2}
-}{
-    \end{tctecbox}
-}
-
-\newenvironment{tecbox*}[1]{
-    \begin{tctecbox*}{#1}
-}{
-    \end{tctecbox*}
-}
-
-\ifamznotes@math
-    \newenvironment{thmbox}[2]{
-        \global\thmboxusedtrue
-        \begin{tcthmbox}{#1}{#2}
-    }{
-        \end{tcthmbox}
-    }
-
-
-    \newenvironment{thmbox*}[1]{
-        \begin{tcthmbox*}{#1}
-    }{
-        \end{tcthmbox*}
-    }
-\fi
-
-\ifamznotes@code
-    \newenvironment{codebox}[2]{
-        \global\codeboxusedtrue
-        \begin{tccodebox}{#1}{#2}
-    }{
-        \end{tccodebox}
-    }
-
-    \newenvironment{codebox*}[1]{
-        \begin{tccodebox*}{#1}
-    }{
-        \end{tccodebox*}
-    }
-\fi
-
-\newcommand{\amzindex}{
-    \addcontentsline{toc}{chapter}{Index}
-    \chapter*{Index}
-
-    % Remove header for index
-    \renewcommand{\headrulewidth}{0pt}
-    \fancyhead{}
-
-    % Add references
-    \ifdfnboxused
-        \tcblistof[\section*]{dfn}{Definitions}
-    \fi
-    \ifexboxused
-        \tcblistof[\section*]{ex}{Examples}
-    \fi
-    \iftecboxused
-        \tcblistof[\section*]{tec}{Techniques}
-    \fi
-    \ifthmboxused
-        \tcblistof[\section*]{thm}{Theorems}
-    \fi
-    \ifcodeboxused
-        \tcblistof[\section*]{code}{Code Snippets}
-    \fi
-}
 
 % ------------------------------------------------------------
 % TEXT MACROS
 
-\newcommand{\dfntxt}[1]{\textbf{#1}}
+\newcommand{\dfntxt}[1]{\textit{\textbf{#1}}}
+
+% from https://tex.stackexchange.com/a/150650
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
 
 % ------------------------------------------------------------
 % MATH MACROS
@@ -387,9 +298,12 @@
     \newcommand{\C}{\mathbb{C}}
     \newcommand{\F}{\mathbb{F}}
 
+    \DeclareMathOperator{\laplace}{\mathscr{L}}
+    \DeclareMathOperator{\proj}{proj}
+    \DeclareMathOperator{\comp}{comp}
+
     \newcommand{\id}{\text{id}}
     \newcommand{\bigO}{\mathcal{O}}
-    \DeclareMathOperator{\laplace}{\mathscr{L}}
     \newcommand{\symdiff}{\bigtriangleup}
 
     \newcommand{\alg}[1]{{\left\langle {#1} \right\rangle}}
