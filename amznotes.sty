@@ -12,7 +12,7 @@
 %   - fix big numbers messing up index
 %   - maybe make index two columns?
 
-\ProvidesPackage{amznotes}[2023/02/02 amznotes]
+\ProvidesPackage{amznotes}[2023/02/14 amznotes]
 
 % ------------------------------------------------------------
 % PROCESS OPTIONS
@@ -20,6 +20,8 @@
 \RequirePackage{kvoptions}
 \DeclareBoolOption{math}        % enables thmbox and math macros
 \DeclareBoolOption{code}        % enables codebox, amzcode, and \amzinputcode
+\DeclareBoolOption{fastcompile} % turns off some features for faster compiling
+
 \ProcessKeyvalOptions{amznotes}
 
 % ------------------------------------------------------------
@@ -94,6 +96,9 @@
 % ------------------------------------------------------------
 % CHAPTER STYLING
 
+\ifamznotes@fastcompile
+\else
+
 \titleformat{\chapter}[display]
 {\normalfont\huge\bfseries}
 {}
@@ -142,6 +147,8 @@
 
 \titlespacing*{\chapter}{0pt}{-40mm}{-15mm}
 
+\fi %\ifamznotes@fastcompile
+
 % ------------------------------------------------------------
 % SECTION STYLING
 
@@ -149,6 +156,9 @@
 
 % ------------------------------------------------------------
 % HEADER STYLING
+
+\ifamznotes@fastcompile
+\else
 
 \pagestyle{fancy}
 \lhead{\footnotesize\nouppercase{\leftmark}}
@@ -161,19 +171,41 @@
     \cfoot[C]{\thepage\ of \pageref{LastPage}}
 }
 
+\fi %\ifamznotes@fastcompile
+
+
 % ------------------------------------------------------------
 % COLOR BOXES
+\ifamznotes@fastcompile
+\tcbset{
+    amzdefaultstyle/.style={
+        fonttitle=\strut\bfseries,  % strut for uniform title height
+        separator sign={\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}},
+        breakable
+    },
+    genboxstyle/.style={
+        amzdefaultstyle,
+    },
+    noteboxstyle/.style={},
+    codeboxstyle/.style={
+        overlay={\begin{tcbclipinterior}\fill[darkgray!20!white] (frame.south west) rectangle ([xshift=6mm]frame.north west);\end{tcbclipinterior}},
+        skin=bicolor,
+        collower=white,
+        colbacklower=darkgray
+    },
+}
 
+\else %\ifamznotes@fastcompile
 \tcbset{
     amzdefaultstyle/.style={
         enhanced,
+        drop fuzzy shadow,
         fonttitle=\strut\bfseries,  % strut for uniform title height
         boxrule=0pt,
         frame hidden,
         separator sign={\ \raisebox{2.3pt}{\scalebox{0.5}{ $\blacktriangleright$}}},
         parbox=false,               % normal paragraph spacing
         breakable,
-        drop fuzzy shadow
     },
     genboxstyle/.style={
         amzdefaultstyle,
@@ -196,6 +228,8 @@
         colbacklower=darkgray
     },
 }
+
+\fi %\ifamznotes@fastcompile
 
 \newcommand{\amzindex}{
     \addcontentsline{toc}{chapter}{Index}
