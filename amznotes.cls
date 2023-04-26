@@ -9,11 +9,9 @@
 % TODO:
 %   - make math in box titles bold
 %   - make macro for lower case namerefs
-%   - fix big numbers messing up index
-%   - maybe make index two columns?
 %   - macro \chapter* as the unnumbered chapter fix above
 
-\ProvidesClass{amznotes}[2023/03/03 amznotes]
+\ProvidesClass{amznotes}[2023/04/23 amznotes]
 \NeedsTeXFormat{LaTeX2e}
 
 \LoadClass[12pt]{report}
@@ -53,6 +51,7 @@
     \RequirePackage{mathtools}          % for math macros; also loads amsmath
     \RequirePackage{amsthm}
     \renewcommand\qedsymbol{$\squoval$}
+    \RequirePackage{derivative}
 \fi
 
 \ifamznotes@code
@@ -76,7 +75,6 @@
 
 % ------------------------------------------------------------
 % PAGE LAYOUT
-
 
 \onehalfspacing
 \renewcommand{\arraystretch}{1.25}
@@ -219,7 +217,7 @@
         boxrule=0pt,
         frame hidden,
         separator sign=\amzcolorboxtitlesep,
-        parbox=false,               % normal paragraph spacing
+        % parbox=false,               % normal paragraph spacing
         breakable,
     },
     genboxstyle/.style={
@@ -362,6 +360,8 @@
     \DeclareMathOperator{\laplace}{\mathscr{L}}
     \DeclareMathOperator{\proj}{proj}
     \DeclareMathOperator{\comp}{comp}
+    \DeclareMathOperator{\TIME}{TIME}
+
 
     \newcommand{\id}{\text{id}}
     \newcommand{\bigO}{\mathcal{O}}
